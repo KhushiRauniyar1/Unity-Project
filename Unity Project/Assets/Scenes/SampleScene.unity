@@ -10027,6 +10027,55 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: b82e76f4092b7d24aaeecddf36fe8d3b, type: 3}
   m_PrefabInstance: {fileID: 1806431780}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1824021749
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1824021751}
+  - component: {fileID: 1824021750}
+  m_Layer: 0
+  m_Name: PlacementSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1824021750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824021749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1527727e516c3c44f8bcad59506d523c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingPrefabs:
+  - {fileID: 4265557144539872705, guid: de0a15ff34b00ba4b99ec43c4ac4a47a, type: 3}
+  - {fileID: 5877168244356687373, guid: 695196c646278364d85cdb92cdc8eb6e, type: 3}
+  - {fileID: 7127057289379774952, guid: f11892320e3deeb4b83847f2a46bff5a, type: 3}
+  - {fileID: 3321575581260703118, guid: 0bc8f8073a3971c4291b8ad2f702eee9, type: 3}
+--- !u!4 &1824021751
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824021749}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.7254105, y: 0.3137358, z: -28.064991}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1829133529
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12353,3 +12402,4 @@ SceneRoots:
   - {fileID: 1097457222}
   - {fileID: 753713254}
   - {fileID: 1940680416}
+  - {fileID: 1824021751}
