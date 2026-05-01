@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: 0fcc0b85550a21d4f8dea0cf26372739, type: 3}
       propertyPath: m_Name
-      value: Props_Roof Solar Panel Variant
+      value: SolarPanel
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 0fcc0b85550a21d4f8dea0cf26372739, type: 3}
       propertyPath: m_LocalPosition.x
@@ -55,5 +55,27 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: 0fcc0b85550a21d4f8dea0cf26372739, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5081350179013087762}
   m_SourcePrefab: {fileID: 100100000, guid: 0fcc0b85550a21d4f8dea0cf26372739, type: 3}
+--- !u!1 &4265557144539872705 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 0fcc0b85550a21d4f8dea0cf26372739, type: 3}
+  m_PrefabInstance: {fileID: 4265557144539773793}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-5081350179013087762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4265557144539872705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60266a3d291966840898e77e0436d05e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  supplyAmount: 10
+  pollutionPerSec: 0

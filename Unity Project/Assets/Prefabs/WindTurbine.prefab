@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100002, guid: 0b6fafa63b69b174584365f2641586a4, type: 3}
       propertyPath: m_Name
-      value: Props_Windmill Variant
+      value: WindTurbine
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 0b6fafa63b69b174584365f2641586a4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -55,5 +55,27 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 100002, guid: 0b6fafa63b69b174584365f2641586a4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 905336337654249319}
   m_SourcePrefab: {fileID: 100100000, guid: 0b6fafa63b69b174584365f2641586a4, type: 3}
+--- !u!1 &5877168244356687373 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100002, guid: 0b6fafa63b69b174584365f2641586a4, type: 3}
+  m_PrefabInstance: {fileID: 5877168244356784303}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &905336337654249319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5877168244356687373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60266a3d291966840898e77e0436d05e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  supplyAmount: 25
+  pollutionPerSec: 0
