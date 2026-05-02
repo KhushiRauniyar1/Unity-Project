@@ -2125,7 +2125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3eb0294f7a1a642a9bec7830b87c5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dayDuration: 120
+  dayDuration: 60
+  nightDuration: 120
 --- !u!1001 &413756122
 PrefabInstance:
   m_ObjectHideFlags: 0
