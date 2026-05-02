@@ -2125,7 +2125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3eb0294f7a1a642a9bec7830b87c5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dayDuration: 120
+  dayDuration: 60
   dayAmbient: {r: 1, g: 0.95, b: 0.8, a: 1}
   nightAmbient: {r: 0.05, g: 0.05, b: 0.15, a: 1}
 --- !u!1001 &413756122
@@ -2940,6 +2940,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   supplyAmount: 25
+  chargePerSecond: 8
 --- !u!1001 &560627133
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11672,6 +11673,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2081564917}
   - component: {fileID: 2081564916}
+  - component: {fileID: 2081564918}
   m_Layer: 0
   m_Name: GameManagers
   m_TagString: Untagged
@@ -11706,6 +11708,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2081564918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2081564915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1366be5ff7dd48498b8bf02c30550ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxCharge: 100
+  currentCharge: 0
+  drainPerBuilding: 0.5
 --- !u!1 &2089672391 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 47ef019eb3bddab469e56e5a31eebf68, type: 3}
