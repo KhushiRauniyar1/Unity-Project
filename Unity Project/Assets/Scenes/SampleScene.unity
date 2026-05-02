@@ -2832,7 +2832,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: 0fcc0b85550a21d4f8dea0cf26372739, type: 3}
       propertyPath: m_Name
-      value: Props_Roof Solar Panel
+      value: SolarPanel
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 0fcc0b85550a21d4f8dea0cf26372739, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2881,6 +2881,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: 0fcc0b85550a21d4f8dea0cf26372739, type: 3}
       insertIndex: -1
       addedObject: {fileID: 554218220}
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: 0fcc0b85550a21d4f8dea0cf26372739, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 554218221}
   m_SourcePrefab: {fileID: 100100000, guid: 0fcc0b85550a21d4f8dea0cf26372739, type: 3}
 --- !u!1 &554218219 stripped
 GameObject:
@@ -2908,6 +2911,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.263578, y: 0.6275749, z: 2.0418673}
   m_Center: {x: 0, y: 0.3137322, z: 0.045281798}
+--- !u!114 &554218221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 554218219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40b7d52f3ed710343ae9ddfbd9267e4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  supplyAmount: 25
 --- !u!1001 &560627133
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10208,6 +10224,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53bb60753cfbbda43b47f083b8dd90ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  energyDemand: 10
+  wastePerSecond: 1
 --- !u!1001 &1877444305
 PrefabInstance:
   m_ObjectHideFlags: 0
