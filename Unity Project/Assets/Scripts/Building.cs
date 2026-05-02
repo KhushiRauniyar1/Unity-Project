@@ -1,57 +1,64 @@
-// Building.cs — paste this complete script
 using UnityEngine;
 
 public class Building : MonoBehaviour
 {
+    // --- Inspector values ---
     public float energyDemand   = 10f;
     public float wastePerSecond =  1f;
 
-    private bool isPowered = false;
-    private Renderer[] rends;
+    // --- Private ---
+    private bool       isPowered = false;
+    private GameObject indicator;       // coloured ball above building
 
+    // ─────────────────────────────────────
     void Start()
     {
-        rends = GetComponentsInChildren<Renderer>();
-
-        // Give each building its OWN material copy
-        // (stops all buildings changing color together)
-        foreach (var r in rends)
-        {
-            Material[] mats = new Material[r.materials.Length];
-            for (int i = 0; i < r.materials.Length; i++)
-                mats[i] = new Material(r.materials[i]);
-            r.materials = mats;
-        }
-
-        SetPowered(false); // Start RED — no power yet
+        // Start with RED ball = no power
+        SetPowered(false);
     }
 
+    // ─────────────────────────────────────
+    // Player clicks TestBuilding
     void OnMouseDown()
     {
-        // When player clicks this building,
-        // tell ConnectionManager to connect it
-     if (ConnectionManager.Instance != null &&
-            ConnectionManager.Instance.selectedSolar != null)
+        if (ConnectionManager.Instance == null) return;
+
+        if (ConnectionManager.Instance.selectedSolar != null)
         {
+            // A solar panel is selected — connect it
             ConnectionManager.Instance.ConnectToBuilding(this);
         }
         else
         {
-            Debug.Log("Click a solar panel first, then click this building.");
+            Debug.Log("Select a solar panel first, then click TestBuilding.");
         }
     }
 
+    // ─────────────────────────────────────
+    // Called by ConnectionManager
+    // powered = true  → GREEN ball (solar connected)
+    // powered = false → RED   ball (no power)
     public void SetPowered(bool powered)
     {
         isPowered = powered;
 
-        // RED = no power,  GREEN = solar connected
-        Color c = powered
-            ? new Color(0.47f, 0.80f, 0.23f)  // green
-            : new Color(0.94f, 0.30f, 0.30f); // red
+        // Create the indicator ball if it doesn't exist yet
+        if (indicator == null)
+        {
+            indicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            indicator.name = "PowerIndicator";
+            indicator.transform.SetParent(transform);
 
-        foreach (var r in rends)
-            foreach (var mat in r.materials)
-                mat.color = c;
+            // Float above the building
+            indicator.transform.localPosition = new Vector3(0f, 5f, 0f);
+            indicator.transform.localScale    = new Vector3(0.6f, 0.6f, 0.6f);
+
+            // Remove the collider so clicks go through to the building
+            Destroy(indicator.GetComponent<Collider>());
+        }
+
+        // RED = no power     GREEN = solar connected
+        indicator.GetComponent<Renderer>().material.color =
+            powered ? Color.green : Color.red;
     }
 }

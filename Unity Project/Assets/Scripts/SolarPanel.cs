@@ -1,34 +1,45 @@
-// SolarPanel.cs
 using UnityEngine;
 
 public class SolarPanel : MonoBehaviour
 {
+    // How much energy this panel supplies
     public float supplyAmount = 25f;
 
-    private Renderer[] rends;
+    // Small indicator above the solar panel
+    private GameObject indicator;
 
+    // ─────────────────────────────────────
     void Start()
     {
-        rends = GetComponentsInChildren<Renderer>();
+        // Create a YELLOW ball above the solar panel
+        indicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        indicator.name = "SolarIndicator";
+        indicator.transform.SetParent(transform);
+        indicator.transform.localPosition = new Vector3(0f, 3f, 0f);
+        indicator.transform.localScale    = new Vector3(0.5f, 0.5f, 0.5f);
+        Destroy(indicator.GetComponent<Collider>());
+
+        // Start as white = idle
+        indicator.GetComponent<Renderer>().material.color = Color.white;
     }
 
+    // ─────────────────────────────────────
+    // Player clicks the solar panel
     void OnMouseDown()
     {
-        // Tell ConnectionManager this panel is selected
         ConnectionManager.Instance.SelectSolar(this);
 
-        // Turn it yellow so player sees it is selected
-        foreach (var r in rends)
-            foreach (var mat in r.materials)
-                mat.color = Color.yellow;
+        // Turn ball YELLOW = selected and ready to connect
+        indicator.GetComponent<Renderer>().material.color = Color.yellow;
 
         Debug.Log("Solar panel selected! Now click TestBuilding.");
     }
 
+    // ─────────────────────────────────────
+    // Called by ConnectionManager after connecting
     public void Deselect()
-     {
-        foreach (var r in rends)
-            foreach (var mat in r.materials)
-                mat.color = Color.white;
+    {
+        // Turn back to white after connecting
+        indicator.GetComponent<Renderer>().material.color = Color.white;
     }
 }
