@@ -5,94 +5,52 @@ public class Building : MonoBehaviour
     public float energyDemand   = 10f;
     public float wastePerSecond =  1f;
 
-    private bool       isPowered   = false;
-    private GameObject indicator;    // power state ball
-    private Light      cityLight;    // warm light inside building
+    private bool isPowered = false;
+    private Renderer[] rends;
 
-    // ─────────────────────────────────────
     void Start()
     {
-        SetPowered(false);
-        CreateCityLight();
+        rends = GetComponentsInChildren<Renderer>();
+
+        // Give each building its OWN material copy
+        // (stops all buildings changing color together)
+        foreach (var r in rends)
+        {
+            Material[] mats = new Material[r.materials.Length];
+            for (int i = 0; i < r.materials.Length; i++)
+                mats[i] = new Material(r.materials[i]);
+            r.materials = mats;
+        }
+
+        SetPowered(false); // Start RED — no power yet
     }
 
-    // ─────────────────────────────────────
-    void Update()
-    {
-        if (DayNightCycle.Instance == null) return;
-
-        if (DayNightCycle.Instance.isNight && isPowered)
-        {
-            // NIGHT + connected to solar → use battery → lights ON
-            bool haspower = BatteryManager.Instance.UseCharge(
-                energyDemand * 0.01f * Time.deltaTime);
-
-            cityLight.enabled = haspower;
-
-            // Indicator: green = powered, red = battery dead
-            SetIndicatorColor(haspower ? Color.green : Color.red);
-        }
-        else if (DayNightCycle.Instance.isDay)
-        {
-            // DAY → turn off city lights (sun is enough)
-            cityLight.enabled = false;
-        }
-        else
-        {
-            // Night but not connected → dark
-            cityLight.enabled = false;
-            SetIndicatorColor(Color.red);
-        }
-    }
-
-    // ─────────────────────────────────────
     void OnMouseDown()
-    {
-        if (ConnectionManager.Instance == null) return;
-        if (ConnectionManager.Instance.selectedSolar != null)
+     {
+        // When player clicks this building,
+        // tell ConnectionManager to connect it
+        if (ConnectionManager.Instance != null &&
+            ConnectionManager.Instance.selectedSolar != null)
+        {
             ConnectionManager.Instance.ConnectToBuilding(this);
+        }
         else
-            Debug.Log("Select a solar panel first.");
+        {
+            Debug.Log("Click a solar panel first, then click this building.");
+        }
     }
 
-    // ─────────────────────────────────────
     public void SetPowered(bool powered)
     {
         isPowered = powered;
 
-        if (indicator == null)
-        {
-            indicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            indicator.name = "PowerIndicator";
-            indicator.transform.SetParent(transform);
-            indicator.transform.localPosition = new Vector3(0f, 5f, 0f);
-            indicator.transform.localScale    = new Vector3(0.6f, 0.6f, 0.6f);
-            Destroy(indicator.GetComponent<Collider>());
-        }
+        // RED = no power,  GREEN = solar connected
+        Color c = powered
+            ? new Color(0.47f, 0.80f, 0.23f)  // green
+            : new Color(0.94f, 0.30f, 0.30f); // red
 
-        SetIndicatorColor(powered ? Color.green : Color.red);
-    }
-
-    // ─────────────────────────────────────
-    void CreateCityLight()
-    {
-        // Create a warm Point Light inside the building
-        GameObject lightObj = new GameObject("CityLight");
-        lightObj.transform.SetParent(transform);
-        lightObj.transform.localPosition = new Vector3(0f, 2f, 0f);
-
-        cityLight = lightObj.AddComponent<Light>();
-        cityLight.type      = LightType.Point;
-        cityLight.color     = new Color(1f, 0.9f, 0.6f); // warm yellow
-        cityLight.intensity = 2f;
-        cityLight.range     = 8f;
-        cityLight.enabled   = false; // OFF by default (day time)
-    }
-
-    // ─────────────────────────────────────
-    void SetIndicatorColor(Color c)
-    {
-        if (indicator != null)
-            indicator.GetComponent<Renderer>().material.color = c;
+        foreach (var r in rends)
+            foreach (var mat in r.materials)
+                mat.color = c;
     }
 }

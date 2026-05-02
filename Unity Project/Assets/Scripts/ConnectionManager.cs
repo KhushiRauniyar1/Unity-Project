@@ -25,7 +25,7 @@ public class ConnectionManager : MonoBehaviour
 
         // Power on the building
         building.SetPowered(true);
-        // Draw the wire between solar and building
+     // Draw the wire between solar and building
         DrawWire(selectedSolar.gameObject, building.gameObject);
 
         Debug.Log("Connected! Building is now GREEN.");
@@ -52,4 +52,4 @@ public class ConnectionManager : MonoBehaviour
         lr.startColor      = new Color(1f, 0.85f, 0f);
         lr.endColor        = new Color(1f, 0.5f,  0f);
     }
-}
+}   
