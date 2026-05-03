@@ -1,4 +1,4 @@
-/ ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────
 // UIController.cs
 // Attach to: Canvas
 // Role: Reads EnergyManager state, updates ALL UI visuals
