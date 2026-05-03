@@ -1,0 +1,11 @@
+Model Information:
+* title:	Digital Multimeter
+* source:	https://sketchfab.com/3d-models/digital-multimeter-5bb862c4f5ae48e4894e37e8b3a7a874
+* author:	Evolver3721 (https://sketchfab.com/evolver3721)
+
+Model License:
+* license type:	CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)
+* requirements:	Author must be credited. Modified versions must have the same license. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Digital Multimeter" (https://sketchfab.com/3d-models/digital-multimeter-5bb862c4f5ae48e4894e37e8b3a7a874) by Evolver3721 (https://sketchfab.com/evolver3721) licensed under CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)
