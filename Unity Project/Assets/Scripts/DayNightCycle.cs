@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class DayNightCycle : MonoBehaviour
 {
+    public SolarPanel solarpanel;
+
     [Header("Duration (seconds)")]
     public float dayDuration = 20f;
     public float nightDuration = 15f;
@@ -44,5 +46,8 @@ public class DayNightCycle : MonoBehaviour
 
         if (energyManager != null)
             energyManager.SetDayMode(dayTime);
+
+        if (solarpanel != null)
+            solarpanel.SetDayMode(dayTime);
     }
 }
