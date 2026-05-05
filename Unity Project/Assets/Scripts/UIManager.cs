@@ -1,9 +1,10 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    // ── Singleton so any script can call UIManager.Instance ──────────────
+    // ── Singleton ────────────────────────────────────────────────────────
     public static UIManager Instance;
 
     void Awake()
@@ -11,76 +12,110 @@ public class UIManager : MonoBehaviour
         Instance = this;
     }
 
-    // ── UI References — drag all of these in Inspector ───────────────────
+    // ── Inspector Fields ─────────────────────────────────────────────────
     [Header("Battery UI")]
-    public Slider batterySlider;
-    public Text batteryText;
+    [SerializeField] private Slider batterySlider;
+    [SerializeField] private TMP_Text batteryText;
 
     [Header("Status UI")]
-    public Text statusText;         // Shows DAY or NIGHT
-    public Text switchStatusText;   // Shows BULB ON / BULB OFF
+    [SerializeField] private TMP_Text statusText;
+    [SerializeField] private TMP_Text switchStatusText;
+    [SerializeField] private TMP_Text dayCounterText;
 
     [Header("Panels")]
-    public GameObject warningPanel;   // Red low battery panel
-    public GameObject gameOverPanel;  // Game over screen
+    [SerializeField] private GameObject warningPanel;
+    [SerializeField] private GameObject gameOverPanel;
 
-    [Header("Day Counter (optional)")]
-    public Text dayCounterText;       // Shows Day 1, Day 2...
+    [Header("Canvas")]
+    [SerializeField] private Canvas UICanvas;
+
+    // ── Start ────────────────────────────────────────────────────────────
+    void Start()
+    {
+        if (warningPanel)  warningPanel.SetActive(false);
+        if (gameOverPanel) gameOverPanel.SetActive(false);
+    }
 
     // ── Called by EnergyManager every frame ──────────────────────────────
     public void UpdateBatteryUI(float current, float max)
     {
-        // Update the slider bar
-        batterySlider.value = current;
+        if (batterySlider)
+            batterySlider.value = current;
 
-        // Calculate and show percentage
-        int pct = Mathf.RoundToInt((current / max) * 100);
-        batteryText.text = pct + "%";
+        if (batteryText)
+        {
+            int pct = Mathf.RoundToInt((current / max) * 100);
+            batteryText.text = pct + "%";
+        }
 
-        // Change slider fill color based on level
-        UpdateBatteryColor(pct);
+        if (warningPanel)
+            warningPanel.SetActive((current / max) * 100f < 20f);
 
-        // Show red warning panel when battery is low
-        warningPanel.SetActive(pct < 20);
+        UpdateBatteryColor(current, max);
     }
 
-    // ── Called by DayNightCycle when time changes ─────────────────────────
+    // ── Called by DayNightCycle ──────────────────────────────────────────
     public void UpdateTimeUI(bool isDay)
     {
-        statusText.text = isDay ? "DAY  ☀" : "NIGHT  🌙";
+        if (statusText)
+            statusText.text = isDay ? "DAY" : "NIGHT";
     }
 
-    // ── Called by SwitchController when player clicks button ─────────────
+    // ── Called by SwitchController ───────────────────────────────────────
     public void UpdateSwitchUI(bool isBulbOn)
     {
-        if (switchStatusText != null)
+        if (switchStatusText)
             switchStatusText.text = isBulbOn ? "Bulb: ON" : "Bulb: OFF";
     }
 
-    // ── Called by EnergyManager when battery hits 0 ───────────────────────
-    public void ShowGameOver()
-    {
-        gameOverPanel.SetActive(true);
-    }
-
-    // ── Called when a new day starts (optional feature) ───────────────────
+    // ── Called by DayNightCycle on each new day ───────────────────────────
     public void UpdateDayCounter(int day)
     {
-        if (dayCounterText != null)
+        if (dayCounterText)
             dayCounterText.text = "Day " + day;
     }
 
-    // ── Changes battery bar color: green → yellow → red ──────────────────
-    void UpdateBatteryColor(int pct)
+    // ── Called by EnergyManager on game over ─────────────────────────────
+    public void ShowGameOver()
     {
-        // Get the fill image of the slider
+        if (gameOverPanel)
+            gameOverPanel.SetActive(true);
+    }
+
+    // ── Toggle battery text visibility ───────────────────────────────────
+    public void ToggleText()
+    {
+        if (batteryText)
+        {
+            bool current = batteryText.gameObject.activeSelf;
+            batteryText.gameObject.SetActive(!current);
+        }
+    }
+
+    // ── Toggle whole canvas ───────────────────────────────────────────────
+    public void ToggleUI()
+    {
+        if (UICanvas)
+        {
+            bool current = UICanvas.gameObject.activeSelf;
+            UICanvas.gameObject.SetActive(!current);
+        }
+    }
+
+    // ── Battery bar color: green → orange → red ──────────────────────────
+    private void UpdateBatteryColor(float current, float max)
+    {
+        if (batterySlider == null) return;
+
         Image fillImage = batterySlider.fillRect.GetComponent<Image>();
         if (fillImage == null) return;
 
-        if (pct > 50)
+        float pct = (current / max) * 100f;
+
+        if (pct > 50f)
             fillImage.color = new Color(0.15f, 0.68f, 0.38f); // Green
-        else if (pct > 20)
-            fillImage.color = new Color(0.95f, 0.62f, 0.07f); // Yellow/Orange
+        else if (pct > 20f)
+            fillImage.color = new Color(0.95f, 0.62f, 0.07f); // Orange
         else
             fillImage.color = new Color(0.91f, 0.30f, 0.24f); // Red
     }

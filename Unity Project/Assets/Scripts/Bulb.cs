@@ -2,65 +2,72 @@ using UnityEngine;
 
 public class Bulb : MonoBehaviour
 {
-    public EnergyManager energyManager;
+    [Header("References")]
+    [SerializeField] private EnergyManager energyManager;
+    [SerializeField] private Light bulbLight;
 
-    public SpriteRenderer bulbRenderer;
-    public SpriteRenderer glowRenderer;
+    [Header("Light Settings")]
+    [SerializeField] private Color lightColor   = new Color(1f, 0.9f, 0.5f);
+    [SerializeField] private float onIntensity  = 3f;
+    [SerializeField] private float onRange      = 10f;
 
-    public Color bulbOnColor = new Color(1f, 1f, 0.4f, 1f);
-    public Color bulbOffColor = new Color(0.6f, 0.6f, 0.6f, 1f);
+    [Header("Flicker Settings")]
+    [SerializeField] private bool  enableFlicker       = true;
+    [SerializeField] private float flickerSpeed        = 0.08f;
+    [SerializeField] private float lowBatteryThreshold = 20f;
 
-    public Color glowOnColor = new Color(1f, 1f, 0f, 0.6f);
-    public Color glowOffColor = new Color(0f, 0f, 0f, 0f);
-
-    public bool enableFlicker = true;
-    public float flickerSpeed = 0.1f;
-    public float lowBatteryThreshold = 20f;
-
-    private bool isBulbOn = false;
-
+    private bool  isBulbOn     = false;
     private float flickerTimer = 0f;
-    private bool flickerState = true;
+    private bool  flickerState = true;
+
+    void Start()
+    {
+        // make sure light is OFF at start
+        if (bulbLight != null)
+        {
+            bulbLight.color     = lightColor;
+            bulbLight.range     = onRange;
+            bulbLight.intensity = 0f;
+            bulbLight.enabled   = false;
+        }
+    }
 
     void Update()
     {
+        // flicker when battery is low
         if (isBulbOn && enableFlicker && BatteryIsLow())
         {
             flickerTimer += Time.deltaTime;
-
             if (flickerTimer >= flickerSpeed)
             {
                 flickerTimer = 0f;
                 flickerState = !flickerState;
-                ApplyVisual(flickerState);
+                ApplyLight(flickerState);
             }
         }
     }
 
+    // called by SwitchController
     public void SetBulbState(bool on)
     {
-        isBulbOn = on;
+        isBulbOn     = on;
         flickerTimer = 0f;
         flickerState = true;
-
-        ApplyVisual(on);
+        ApplyLight(on);
     }
 
-    void ApplyVisual(bool on)
+    private void ApplyLight(bool on)
     {
-        if (bulbRenderer != null)
-            bulbRenderer.color = on ? bulbOnColor : bulbOffColor;
+        if (bulbLight == null) return;
 
-        if (glowRenderer != null)
-            glowRenderer.color = on ? glowOnColor : glowOffColor;
+        bulbLight.enabled   = on;
+        bulbLight.intensity = on ? onIntensity : 0f;
     }
 
-    bool BatteryIsLow()
+    private bool BatteryIsLow()
     {
         if (energyManager == null) return false;
-
-        float pct = (energyManager.currentBattery / energyManager.maxBattery) * 100f;
-
+        float pct = (energyManager.currentBattery / energyManager.MaxBattery) * 100f;
         return pct < lowBatteryThreshold;
     }
 }

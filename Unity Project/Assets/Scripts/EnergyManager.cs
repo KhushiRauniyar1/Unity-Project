@@ -2,25 +2,43 @@ using UnityEngine;
 
 public class EnergyManager : MonoBehaviour
 {
+    // ── Singleton ────────────────────────────────────────────────────────
+    public static EnergyManager Instance;
+
+    void Awake()
+    {
+        Instance = this;
+    }
+
+    // ── Inspector Fields ─────────────────────────────────────────────────
     [Header("Battery Settings")]
-    public float maxBattery = 100f;
+    [SerializeField] private float maxBattery = 100f;
     public float currentBattery = 80f;
 
+    // Public getter so other scripts can READ maxBattery without errors
+    public float MaxBattery => maxBattery;
+
     [Header("Energy Rates (per second)")]
-    public float solarChargeRate = 5f;
-    public float bulbDrainRate = 3f;
+    [SerializeField] private float solarChargeRate = 5f;
+    [SerializeField] private float bulbDrainRate = 3f;
 
     [Header("Bulb Visual")]
-    public GameObject bulbGlowObject;
+    [SerializeField] private GameObject bulbGlowObject;
 
-    // Private tracking
+    // ── Private Tracking ─────────────────────────────────────────────────
     private bool isBulbOn = false;
     private bool isDay = true;
     private bool isGameOver = false;
 
+    // ── Start ────────────────────────────────────────────────────────────
     void Start()
     {
-        // Tell UIManager the starting battery values
+        if (UIManager.Instance == null)
+        {
+            Debug.LogError("UIManager not found! Attach UIManager script to GameManager.");
+            return;
+        }
+
         UIManager.Instance.UpdateBatteryUI(currentBattery, maxBattery);
         UIManager.Instance.UpdateTimeUI(true);
         UIManager.Instance.UpdateSwitchUI(false);
@@ -28,6 +46,7 @@ public class EnergyManager : MonoBehaviour
         SetBulb(false);
     }
 
+    // ── Update ───────────────────────────────────────────────────────────
     void Update()
     {
         if (isGameOver) return;
@@ -40,41 +59,52 @@ public class EnergyManager : MonoBehaviour
 
         currentBattery = Mathf.Clamp(currentBattery, 0f, maxBattery);
 
-        // UIManager handles ALL the display now
-        UIManager.Instance.UpdateBatteryUI(currentBattery, maxBattery);
+        if (UIManager.Instance != null)
+            UIManager.Instance.UpdateBatteryUI(currentBattery, maxBattery);
 
         if (currentBattery <= 0f)
             TriggerGameOver();
     }
 
+    // ── Called by DayNightCycle ──────────────────────────────────────────
     public void SetDayMode(bool dayTime)
     {
         isDay = dayTime;
-        UIManager.Instance.UpdateTimeUI(dayTime);
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.UpdateTimeUI(dayTime);
     }
 
+    // ── Called by SwitchController ───────────────────────────────────────
     public void ToggleBulb()
     {
         isBulbOn = !isBulbOn;
         SetBulb(isBulbOn);
-        UIManager.Instance.UpdateSwitchUI(isBulbOn);
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.UpdateSwitchUI(isBulbOn);
     }
 
-    void SetBulb(bool on)
+    // ── Private helpers ──────────────────────────────────────────────────
+    private void SetBulb(bool on)
     {
         isBulbOn = on;
         if (bulbGlowObject != null)
             bulbGlowObject.SetActive(on);
     }
 
-    void TriggerGameOver()
+    private void TriggerGameOver()
     {
         isGameOver = true;
-        UIManager.Instance.ShowGameOver();
         SetBulb(false);
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.ShowGameOver();
+
         Time.timeScale = 0;
     }
 
+    // ── Called by Try Again button ───────────────────────────────────────
     public void RestartGame()
     {
         Time.timeScale = 1;

@@ -1,32 +1,52 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class SwitchController : MonoBehaviour
 {
-    public Bulb bulb;
-    public EnergyManager energyManager;
-    public Text switchLabel;
+    [Header("References")]
+    [SerializeField] private EnergyManager energyManager;
+    [SerializeField] private Bulb bulb;
+
+    [Header("Button Text")]
+    [SerializeField] private TMP_Text buttonLabel;
+
+    [Header("Button Colors")]
+    [SerializeField] private UnityEngine.UI.Image buttonBackground;
+    [SerializeField] private Color onColor  = new Color(0.91f, 0.30f, 0.24f); // Red when ON
+    [SerializeField] private Color offColor = new Color(0.18f, 0.80f, 0.44f); // Green when OFF
 
     private bool isBulbOn = false;
 
     void Start()
     {
-        UpdateLabel();
+        UpdateButton();
     }
 
-    // Connect this to Button's OnClick() event in Inspector
+    // Connect this to Button OnClick() in Inspector
     public void OnSwitchPressed()
     {
         isBulbOn = !isBulbOn;
 
-        energyManager.ToggleBulb();
+        if (energyManager != null)
+            energyManager.ToggleBulb();
 
-        UpdateLabel();
-        if (bulb != null) bulb.SetBulbState (isBulbOn);    }
+        if (bulb != null)
+            bulb.SetBulbState(isBulbOn);
 
-    void UpdateLabel()
+        UpdateButton();
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.UpdateSwitchUI(isBulbOn);
+    }
+
+    private void UpdateButton()
     {
-        if (switchLabel != null)
-            switchLabel.text = isBulbOn ? "SWITCH OFF" : "SWITCH ON";
+        // Change button text
+        if (buttonLabel != null)
+            buttonLabel.text = isBulbOn ? "SWITCH OFF" : "SWITCH ON";
+
+        // Change button color
+        if (buttonBackground != null)
+            buttonBackground.color = isBulbOn ? onColor : offColor;
     }
 }

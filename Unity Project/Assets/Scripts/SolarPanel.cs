@@ -2,19 +2,28 @@ using UnityEngine;
 
 public class SolarPanel : MonoBehaviour
 {
-    public SpriteRenderer panelRenderer;
+    [Header("Solar Panel Light")]
+    [SerializeField] private Light panelLight;        // drag SolarPanelLight here
 
-    public Color activeColor = new Color(1f, 0.85f, 0f, 1f);   // Bright yellow
-    public Color inactiveColor = new Color(0.4f, 0.4f, 0.4f, 1f); // Grey
+    [Header("Light Settings")]
+    [SerializeField] private Color dayColor   = new Color(1f, 0.95f, 0.5f);  // warm yellow
+    [SerializeField] private Color nightColor = new Color(0.2f, 0.2f, 0.5f); // dim blue
+    [SerializeField] private float dayIntensity   = 2f;  // bright during day
+    [SerializeField] private float nightIntensity = 0f;  // off at night
 
-    private bool isDay = false;
-
-    // Called by DayNightCycle — add this call inside ApplyTimeOfDay()
-    public void SetDayMode(bool dayTime)
+    void Start()
     {
-        isDay = dayTime;
+        // start as daytime
+        SetDayMode(true);
+    }
 
-        if (panelRenderer != null)
-            panelRenderer.color = isDay ? activeColor : inactiveColor;
+    // called by DayNightCycle
+    public void SetDayMode(bool isDay)
+    {
+        if (panelLight == null) return;
+
+        panelLight.enabled   = true;
+        panelLight.color     = isDay ? dayColor   : nightColor;
+        panelLight.intensity = isDay ? dayIntensity : nightIntensity;
     }
 }
