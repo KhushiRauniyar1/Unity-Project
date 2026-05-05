@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class SwitchController : MonoBehaviour
 {
+    public Bulb bulb;
     public EnergyManager energyManager;
     public Text switchLabel;
 
@@ -21,7 +22,7 @@ public class SwitchController : MonoBehaviour
         energyManager.ToggleBulb();
 
         UpdateLabel();
-    }
+        if (bulb != null) bulb.SetBulbState (isBulbOn);    }
 
     void UpdateLabel()
     {
