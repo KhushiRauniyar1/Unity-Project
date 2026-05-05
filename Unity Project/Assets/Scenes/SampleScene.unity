@@ -905,13 +905,43 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6769232865274545983, guid: 63595670e1005b644a5d30b65484a33d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1738311255}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6769232865274190623, guid: 63595670e1005b644a5d30b65484a33d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 485462665}
   m_SourcePrefab: {fileID: 100100000, guid: 63595670e1005b644a5d30b65484a33d, type: 3}
 --- !u!4 &485462663 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6769232865274545983, guid: 63595670e1005b644a5d30b65484a33d, type: 3}
   m_PrefabInstance: {fileID: 485462662}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &485462664 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6769232865274190623, guid: 63595670e1005b644a5d30b65484a33d, type: 3}
+  m_PrefabInstance: {fileID: 485462662}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &485462665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485462664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a6c2024ebc11854f9bb6b36905a0d74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  energyManager: {fileID: 0}
+  bulbRenderer: {fileID: 0}
+  glowRenderer: {fileID: 0}
+  bulbOnColor: {r: 1, g: 1, b: 0.4, a: 1}
+  bulbOffColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
+  glowOnColor: {r: 1, g: 1, b: 0, a: 0.6}
+  glowOffColor: {r: 0, g: 0, b: 0, a: 0}
+  enableFlicker: 1
+  flickerSpeed: 0.1
+  lowBatteryThreshold: 20
 --- !u!1001 &521475613
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1268,6 +1298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d503acb276acb2c4791b9e6512281e0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bulb: {fileID: 0}
   energyManager: {fileID: 0}
   switchLabel: {fileID: 0}
 --- !u!1001 &737008329
@@ -1450,11 +1481,6 @@ MonoBehaviour:
   currentBattery: 80
   solarChargeRate: 5
   bulbDrainRate: 3
-  batterySlider: {fileID: 0}
-  batteryText: {fileID: 0}
-  statusText: {fileID: 0}
-  warningPanel: {fileID: 0}
-  gameOverPanel: {fileID: 0}
   bulbGlowObject: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
@@ -3541,6 +3567,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 096fe21c8968a274bb70094f6d748206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  solarpanel: {fileID: 0}
   dayDuration: 20
   nightDuration: 15
   energyManager: {fileID: 0}
