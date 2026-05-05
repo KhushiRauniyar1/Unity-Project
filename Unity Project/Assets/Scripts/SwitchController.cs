@@ -5,15 +5,17 @@ public class SwitchController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private EnergyManager energyManager;
-    [SerializeField] private Bulb bulb;
 
-    [Header("Button Text")]
+    [Header("All Bulbs and Street Lights")]
+    [SerializeField] private Bulb[] allBulbs; // drag ALL bulb objects here
+
+    [Header("Button")]
     [SerializeField] private TMP_Text buttonLabel;
-
-    [Header("Button Colors")]
     [SerializeField] private UnityEngine.UI.Image buttonBackground;
-    [SerializeField] private Color onColor  = new Color(0.91f, 0.30f, 0.24f); // Red when ON
-    [SerializeField] private Color offColor = new Color(0.18f, 0.80f, 0.44f); // Green when OFF
+
+    [Header("Colors")]
+    [SerializeField] private Color onColor  = new Color(0.64f, 0.18f, 0.18f); // red
+    [SerializeField] private Color offColor = new Color(0.18f, 0.49f, 0.20f); // green
 
     private bool isBulbOn = false;
 
@@ -22,16 +24,21 @@ public class SwitchController : MonoBehaviour
         UpdateButton();
     }
 
-    // Connect this to Button OnClick() in Inspector
+    // connect to Button OnClick in Inspector
     public void OnSwitchPressed()
     {
         isBulbOn = !isBulbOn;
 
+        // tell EnergyManager
         if (energyManager != null)
             energyManager.ToggleBulb();
 
-        if (bulb != null)
-            bulb.SetBulbState(isBulbOn);
+        // turn ON or OFF every single bulb and street light
+        foreach (Bulb b in allBulbs)
+        {
+            if (b != null)
+                b.SetBulbState(isBulbOn);
+        }
 
         UpdateButton();
 
@@ -41,11 +48,9 @@ public class SwitchController : MonoBehaviour
 
     private void UpdateButton()
     {
-        // Change button text
         if (buttonLabel != null)
             buttonLabel.text = isBulbOn ? "SWITCH OFF" : "SWITCH ON";
 
-        // Change button color
         if (buttonBackground != null)
             buttonBackground.color = isBulbOn ? onColor : offColor;
     }
