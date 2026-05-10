@@ -2,65 +2,69 @@ using UnityEngine;
 
 public class DayNightCycle : MonoBehaviour
 {
-    // ── Inspector Fields ─────────────────────────────────────────────────
+    // ── Singleton ─────────────────────────────────────────────────────────
+    public static DayNightCycle Instance;
+
+    void Awake()
+    {
+        Instance = this;
+    }
+
+    // ── Inspector Fields ──────────────────────────────────────────────────
     [Header("Duration (seconds)")]
     [SerializeField] private float dayDuration   = 20f;
     [SerializeField] private float nightDuration = 15f;
 
     [Header("References")]
-    [SerializeField] private EnergyManager energyManager;
-    [SerializeField] private SolarPanel solarPanel;
-    [SerializeField] private Light sunLight;       // drag your Directional Light here
-    [SerializeField] private Transform sunPivot;   // empty object that rotates — sun orbits around it
-
-    [Header("Sun Rotation")]
-    [SerializeField] private float sunriseAngle = -90f;  // sun below horizon (east)
-    [SerializeField] private float sunsetAngle  =  90f;  // sun below horizon (west)
-    [SerializeField] private float noonAngle    =   0f;  // sun directly above (noon)
-
-    [Header("Sun Light Colors")]
-    [SerializeField] private Color sunriseColor = new Color(1f,   0.5f,  0.2f);  // orange sunrise
-    [SerializeField] private Color noonColor    = new Color(1f,   0.95f, 0.8f);  // warm white noon
-    [SerializeField] private Color sunsetColor  = new Color(1f,   0.4f,  0.1f);  // deep orange sunset
-    [SerializeField] private Color nightColor   = new Color(0.05f,0.05f, 0.2f);  // dark blue night
-
-    [Header("Sun Intensity")]
-    [SerializeField] private float maxIntensity  = 1.5f;  // brightest at noon
-    [SerializeField] private float nightIntensity = 0f;   // off at night
+    [SerializeField] private Light     sunLight;
+    [SerializeField] private Transform sunPivot;
 
     [Header("Sky Colors")]
-    [SerializeField] private Color daySkyColor    = new Color(0.53f, 0.81f, 0.98f); // light blue
-    [SerializeField] private Color sunriseSkyColor = new Color(1f,   0.6f,  0.3f);  // orange sky
-    [SerializeField] private Color nightSkyColor   = new Color(0.02f,0.02f, 0.08f); // very dark
+    [SerializeField] private Color daySky    = new Color(0.53f, 0.81f, 0.98f, 1f);
+    [SerializeField] private Color nightSky  = new Color(0.02f, 0.02f, 0.08f, 1f);
+
+    [Header("Sun Colors")]
+    [SerializeField] private Color sunDayColor   = new Color(1f,   0.95f, 0.8f,  1f);
+    [SerializeField] private Color sunNightColor = new Color(0.05f,0.05f, 0.2f,  1f);
+
+    [Header("Sun Intensity")]
+    [SerializeField] private float maxSunIntensity = 1.5f;
 
     // ── Private ───────────────────────────────────────────────────────────
-    private float  timer    = 0f;
-    private bool   isDay    = true;
-    private int    dayCount = 1;
+    private float  timer           = 0f;
+    private bool   isDay           = true;
+    private int    dayCount        = 1;
+    private float  solarMultiplier = 1f;
     private Camera mainCamera;
 
     // ── Start ─────────────────────────────────────────────────────────────
     void Start()
     {
+        // find camera automatically — no need to drag
         mainCamera = Camera.main;
+
         ApplyTimeOfDay(true);
 
         if (UIManager.Instance != null)
             UIManager.Instance.UpdateDayCounter(dayCount);
     }
 
-    // ── Update — runs every frame ─────────────────────────────────────────
+    // ── Update — runs every frame ──────────────────────────────────────────
     void Update()
     {
         timer += Time.deltaTime;
 
         float duration = isDay ? dayDuration : nightDuration;
-        float progress = Mathf.Clamp01(timer / duration); // 0 to 1
+        float t        = Mathf.Clamp01(timer / duration);
 
         if (isDay)
-            UpdateDaytime(progress);
+        {
+            UpdateDaytime(t);
+        }
         else
-            UpdateNighttime(progress);
+        {
+            UpdateNighttime();
+        }
 
         // switch phase when timer runs out
         if (timer >= duration)
@@ -75,94 +79,80 @@ public class DayNightCycle : MonoBehaviour
                     UIManager.Instance.UpdateDayCounter(dayCount);
             }
 
-            // notify other scripts
-            if (energyManager != null)
-                energyManager.SetDayMode(isDay);
-
-            if (solarPanel != null)
-                solarPanel.SetDayMode(isDay);
-
-            if (UIManager.Instance != null)
-                UIManager.Instance.UpdateTimeUI(isDay);
+            ApplyTimeOfDay(isDay);
         }
     }
 
-    // ── Daytime: sun rises from east, crosses sky, sets in west ──────────
-    private void UpdateDaytime(float t)
+    // ── Daytime: sun rises and sets ────────────────────────────────────────
+    void UpdateDaytime(float t)
     {
-        // t = 0 is sunrise, t = 0.5 is noon, t = 1 is sunset
-
-        // rotate the sun pivot — sun moves from -90 to +90 degrees
+        // sun moves from east to west
         if (sunPivot != null)
         {
-            float angle = Mathf.Lerp(sunriseAngle, sunsetAngle, t);
+            float angle = Mathf.Lerp(-90f, 90f, t);
             sunPivot.rotation = Quaternion.Euler(angle, 0f, 0f);
         }
 
+        // sun intensity peaks at noon using sine curve
+        solarMultiplier = Mathf.Sin(t * Mathf.PI);
+
         if (sunLight != null)
         {
-            // intensity: low at sunrise, peak at noon, low at sunset
-            // uses a sine curve so it feels natural
-            float intensity = Mathf.Sin(t * Mathf.PI) * maxIntensity;
-            sunLight.intensity = intensity;
-
-            // color: orange sunrise → white noon → orange sunset
-            if (t < 0.5f)
-                sunLight.color = Color.Lerp(sunriseColor, noonColor, t * 2f);
-            else
-                sunLight.color = Color.Lerp(noonColor, sunsetColor, (t - 0.5f) * 2f);
+            sunLight.intensity = solarMultiplier * maxSunIntensity;
+            sunLight.color     = sunDayColor;
         }
 
-        // sky color: orange at sunrise → blue at noon → orange at sunset
+        // sky color transitions
         if (mainCamera != null)
         {
-            Color skyColor;
             if (t < 0.2f)
-                skyColor = Color.Lerp(nightSkyColor, sunriseSkyColor, t / 0.2f);
-            else if (t < 0.5f)
-                skyColor = Color.Lerp(sunriseSkyColor, daySkyColor, (t - 0.2f) / 0.3f);
-            else if (t < 0.8f)
-                skyColor = Color.Lerp(daySkyColor, sunriseSkyColor, (t - 0.5f) / 0.3f);
+                mainCamera.backgroundColor = Color.Lerp(
+                    nightSky, daySky, t / 0.2f);
+            else if (t > 0.8f)
+                mainCamera.backgroundColor = Color.Lerp(
+                    daySky, nightSky, (t - 0.8f) / 0.2f);
             else
-                skyColor = Color.Lerp(sunriseSkyColor, nightSkyColor, (t - 0.8f) / 0.2f);
-
-            mainCamera.backgroundColor = skyColor;
+                mainCamera.backgroundColor = daySky;
         }
     }
 
-    // ── Nighttime: sun stays below horizon, sky stays dark ────────────────
-    private void UpdateNighttime(float t)
+    // ── Nighttime: sun below horizon ───────────────────────────────────────
+    void UpdateNighttime()
     {
-        // keep sun below horizon during night
-        if (sunPivot != null)
-        {
-            float angle = Mathf.Lerp(sunsetAngle, sunriseAngle + 360f, t);
-            sunPivot.rotation = Quaternion.Euler(angle, 0f, 0f);
-        }
+        solarMultiplier = 0f;
 
-        // sun light off at night
         if (sunLight != null)
         {
-            sunLight.intensity = nightIntensity;
-            sunLight.color     = nightColor;
+            sunLight.intensity = 0f;
+            sunLight.color     = sunNightColor;
         }
 
-        // sky stays dark
         if (mainCamera != null)
-            mainCamera.backgroundColor = nightSkyColor;
+            mainCamera.backgroundColor = nightSky;
     }
 
-    // ── Helper called when phase first starts ─────────────────────────────
-    private void ApplyTimeOfDay(bool dayTime)
+    // ── Apply when phase first switches ───────────────────────────────────
+    void ApplyTimeOfDay(bool dayTime)
     {
         isDay = dayTime;
 
-        if (energyManager != null) energyManager.SetDayMode(dayTime);
-        if (solarPanel    != null) solarPanel.SetDayMode(dayTime);
+        // tell EnergyManager
+        if (EnergyManager.Instance != null)
+            EnergyManager.Instance.SetDayMode(dayTime);
+
+        // update UI text
         if (UIManager.Instance != null)
-        {
             UIManager.Instance.UpdateTimeUI(dayTime);
-            UIManager.Instance.UpdateDayCounter(dayCount);
-        }
+    }
+
+    // ── Public getters for other scripts ──────────────────────────────────
+    public float GetSolarMultiplier()
+    {
+        return solarMultiplier;
+    }
+
+    public bool IsDay()
+    {
+        return isDay;
     }
 }
