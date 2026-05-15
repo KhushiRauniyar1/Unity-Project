@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - CinemachineTarget
   - Road
+  - Vechile
   layers:
   - Default
   - TransparentFX
@@ -14,7 +15,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Groundmask
   - 
   - 
   - 
@@ -44,7 +45,7 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Ground
+  - name: Traffic
     uniqueID: 36260091
     locked: 0
   m_RenderingLayers:
