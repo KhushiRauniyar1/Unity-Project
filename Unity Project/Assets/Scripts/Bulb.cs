@@ -7,9 +7,9 @@ public class Bulb : MonoBehaviour
     [SerializeField] private Light bulbLight;
 
     [Header("Light Settings")]
-    [SerializeField] private Color lightColor   = new Color(1f, 0.9f, 0.5f);
-    [SerializeField] private float onIntensity  = 3f;
-    [SerializeField] private float onRange      = 10f;
+   [SerializeField] private Color lightColor   = new Color(1f, 0.95f, 0.8f);
+[SerializeField] private float onIntensity  = 200f;
+[SerializeField] private float onRange      = 150f;
 
     [Header("Flicker Settings")]
     [SerializeField] private bool  enableFlicker       = true;
